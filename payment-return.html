@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirming payment | JOSEBIS GLOBAL VENTURES LLC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell site-header__inner">
+      <a class="brand" href="./" aria-label="JOSEBIS GLOBAL VENTURES LLC">
+        <img class="brand__logo" src="assets/logo-jgv.png" alt="JOSEBIS GLOBAL VENTURES LLC" width="280" height="80" />
+      </a>
+    </div>
+  </header>
+
+  <main class="return-wrap">
+    <div class="return-panel" id="return-panel">
+      <p class="eyebrow"><i class="bi bi-shield-check"></i> Stripe</p>
+      <h1 id="return-title">Confirming your payment…</h1>
+      <p id="return-text">Please wait while we verify your checkout session.</p>
+      <div class="return-spinner" id="return-spinner" aria-hidden="true"></div>
+      <p id="return-email" class="return-email" hidden></p>
+      <a class="btn btn-orange" id="return-cta" href="get-itin.html#apply" hidden>
+        <i class="bi bi-arrow-right-circle"></i> Continue
+      </a>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var sessionId = params.get("session_id") || "";
+      var packageId = params.get("pkg") || localStorage.getItem("jgv_pending_pkg") || "";
+      var title = document.getElementById("return-title");
+      var text = document.getElementById("return-text");
+      var spinner = document.getElementById("return-spinner");
+      var cta = document.getElementById("return-cta");
+      var emailNote = document.getElementById("return-email");
+
+      function fail(msg) {
+        spinner.hidden = true;
+        title.textContent = "Payment not confirmed";
+        text.textContent = msg;
+        cta.hidden = false;
+        cta.innerHTML = '<i class="bi bi-arrow-left-circle"></i> Back';
+        cta.href = packageId === "itin" ? "get-itin.html#apply" : "./#packages";
+      }
+
+      function ok(data) {
+        spinner.hidden = true;
+        cta.hidden = false;
+
+        try {
+          localStorage.setItem(
+            "jgv_payment",
+            JSON.stringify({
+              payment_token: data.payment_token,
+              package_id: data.package_id,
+              package_title: data.package_title,
+              email: data.email || "",
+              expires_at: data.expires_at,
+              form_link: data.form_link || "",
+            })
+          );
+          localStorage.removeItem("jgv_pending_pkg");
+        } catch (e) {}
+
+        if (data.form_link) {
+          title.textContent = "Payment confirmed";
+          if (data.form_email_sent && data.email) {
+            text.textContent =
+              "We sent a secure link to complete your application to " + data.email + ". Check your inbox (and spam), then open the link to fill the form.";
+            emailNote.hidden = false;
+            emailNote.textContent = "Email sent to " + data.email;
+          } else if (data.email) {
+            text.textContent =
+              "Payment is confirmed. We could not send the email automatically — use the button below to open your application form.";
+          } else {
+            text.textContent =
+              "Payment is confirmed. Open the button below to complete your application form. Bookmark the page if you need to finish later.";
+          }
+          cta.href = data.form_link;
+          cta.innerHTML = '<i class="bi bi-file-earmark-text-fill"></i> Complete your form';
+        } else {
+          title.textContent = "Payment confirmed";
+          text.textContent = "Thank you for your payment. Our team will contact you shortly.";
+          cta.href = "./#packages";
+          cta.innerHTML = '<i class="bi bi-house"></i> Back to home';
+        }
+      }
+
+      if (!packageId) {
+        fail("Missing package information. Please start again.");
+        return;
+      }
+
+      fetch("/api/verify-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sessionId,
+          package_id: packageId,
+        }),
+      })
+        .then(function (r) {
+          return r.json().then(function (j) {
+            return { ok: r.ok, json: j };
+          });
+        })
+        .then(function (res) {
+          if (!res.ok || !res.json.ok) {
+            fail((res.json && res.json.message) || "Could not verify payment.");
+            return;
+          }
+          ok(res.json);
+        })
+        .catch(function () {
+          fail("Network error while verifying payment. Please try again.");
+        });
+    })();
+  </script>
+</body>
+</html>

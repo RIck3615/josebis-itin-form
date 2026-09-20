@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Your ITIN | JOSEBIS GLOBAL VENTURES LLC</title>
+  <meta name="description" content="Get your official ITIN with JOSEBIS GLOBAL VENTURES LLC. Pay securely, then complete your application form from the link we email you." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="itin">
+  <header class="site-header">
+    <div class="shell site-header__inner">
+      <a class="brand" href="./" aria-label="JOSEBIS GLOBAL VENTURES LLC">
+        <img class="brand__logo" src="assets/logo-jgv.png" alt="JOSEBIS GLOBAL VENTURES LLC" width="280" height="80" />
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="./#packages">Packages</a>
+        <a href="./#about">About</a>
+        <a href="get-itin.html" aria-current="page">Get Your ITIN</a>
+        <a class="nav-cta" href="https://www.josebisglobalventures.com/#contact" target="_blank" rel="noopener">
+          <i class="bi bi-chat-dots-fill"></i> Contact
+        </a>
+      </nav>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero hero--itin" id="top">
+    <div class="shell hero__grid">
+      <div class="hero__copy">
+        <span class="pill"><i class="bi bi-person-badge-fill"></i> GET YOUR ITIN</span>
+        <h1>Official U.S. tax ID, handled for you</h1>
+        <p class="hero__lead">
+          Get your official ITIN if you don’t qualify for a Social Security Number. We manage the process:
+          document review, application prep, and help avoiding delays. Typical IRS timing: 6-12 weeks.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn-orange" href="#apply"><i class="bi bi-credit-card-fill"></i> Pay &amp; apply</a>
+        </div>
+      </div>
+      <div class="hero__visual" aria-hidden="true">
+        <div class="hero-card">
+          <div class="hero-card__icon hero-card__icon--orange"><i class="bi bi-1-circle-fill"></i></div>
+          <strong>1. Payment</strong>
+          <p>Secure Stripe checkout</p>
+        </div>
+        <div class="hero-card hero-card--offset">
+          <div class="hero-card__icon hero-card__icon--blue"><i class="bi bi-2-circle-fill"></i></div>
+          <strong>2. Form link</strong>
+          <p>We email you the intake form</p>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card__icon hero-card__icon--green"><i class="bi bi-3-circle-fill"></i></div>
+          <strong>3. Submit</strong>
+          <p>Your file is emailed to our team</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="apply" id="apply">
+    <div class="shell">
+      <header class="section-head">
+        <p class="eyebrow"><i class="bi bi-file-earmark-text-fill"></i> ITIN Application</p>
+        <h2>Pay first, then complete the form</h2>
+        <p class="section-lead" id="apply-lead">
+          Step 1: pay securely with Stripe. Step 2: we email you a link to fill the form. When you submit, our team receives your application by email.
+        </p>
+      </header>
+
+      <ol class="wizard" id="wizard" aria-label="Application steps">
+        <li class="wizard__step is-active" data-step="1">
+          <span class="wizard__num">1</span>
+          <span class="wizard__label">Payment</span>
+        </li>
+        <li class="wizard__step" data-step="2">
+          <span class="wizard__num">2</span>
+          <span class="wizard__label">Form</span>
+        </li>
+        <li class="wizard__step" data-step="3">
+          <span class="wizard__num">3</span>
+          <span class="wizard__label">Done</span>
+        </li>
+      </ol>
+
+      <div id="alert" class="alert" role="alert" aria-live="polite"></div>
+
+      <!-- STEP 1: PAYMENT -->
+      <div class="form-shell payment-step" id="step-payment">
+        <div class="payment-ready">
+          <div class="form-lock__icon"><i class="bi bi-credit-card-fill"></i></div>
+          <h3>Step 1: Payment</h3>
+          <p>
+            Complete Stripe checkout. After payment is confirmed, we email you a secure link to fill out your ITIN intake form.
+            When you submit the form, everything is sent to our team by email.
+          </p>
+          <div class="package-chip" id="payment-summary">
+            <span class="package-chip__icon"><i class="bi bi-person-badge-fill"></i></span>
+            <span>
+              <strong>Get Your ITIN</strong>
+              <em>Ready for checkout</em>
+            </span>
+          </div>
+          <button type="button" class="btn btn-orange btn-wide btn-lg" id="itin-pay-btn">
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-label"><i class="bi bi-credit-card-fill"></i> Pay</span>
+          </button>
+          <p class="test-row" id="test-row" hidden style="margin-top:1rem">
+            <button type="button" class="btn btn-ghost" id="test-pay-btn"><i class="bi bi-bug"></i> Simulate payment (dev)</button>
+          </p>
+          <p class="fineprint" style="margin-top:1rem">
+            <i class="bi bi-envelope-fill"></i>
+            Already paid? Open the link from your email, or paste it here if you still have it.
+          </p>
+        </div>
+      </div>
+
+      <!-- STEP 2: FORM (unlocked after payment via emailed link) -->
+      <div class="form-shell" id="step-form" hidden>
+        <div class="form-shell__banner">
+          <div class="form-shell__banner-icon"><i class="bi bi-shield-lock-fill"></i></div>
+          <div>
+            <strong>Secure ITIN intake</strong>
+            <p>Your information is used only to process your application.</p>
+          </div>
+        </div>
+
+        <form id="itin-form" novalidate>
+          <input type="hidden" id="package_id" name="package_id" value="itin" />
+
+          <section class="form-panel">
+            <header class="form-panel__head">
+              <span class="form-panel__num">01</span>
+              <div>
+                <h3>Selected package</h3>
+                <p>Confirm the service you are applying for</p>
+              </div>
+            </header>
+            <div class="package-chip" id="selected-package-label">
+              <span class="package-chip__icon"><i class="bi bi-person-badge-fill"></i></span>
+              <span>
+                <strong>Get Your ITIN</strong>
+                <em>Official U.S. tax ID · document review included</em>
+              </span>
+            </div>
+          </section>
+
+          <section class="form-panel">
+            <header class="form-panel__head">
+              <span class="form-panel__num">02</span>
+              <div>
+                <h3>Personal information</h3>
+                <p>As shown on your passport / birth certificate</p>
+              </div>
+            </header>
+            <div class="grid grid-2">
+              <div class="field">
+                <label for="first_name">First Name <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="bi bi-person" aria-hidden="true"></i>
+                  <input type="text" id="first_name" name="first_name" placeholder="First name" required autocomplete="given-name" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="middle_name">Middle Name</label>
+                <div class="input-wrap">
+                  <i class="bi bi-person" aria-hidden="true"></i>
+                  <input type="text" id="middle_name" name="middle_name" placeholder="Optional" autocomplete="additional-name" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="last_name">Last Name <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="bi bi-person" aria-hidden="true"></i>
+                  <input type="text" id="last_name" name="last_name" placeholder="Last name" required autocomplete="family-name" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="phone">Phone (with country code) <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="bi bi-telephone" aria-hidden="true"></i>
+                  <input type="tel" id="phone" name="phone" placeholder="+1 555 000 0000" required autocomplete="tel" />
+                </div>
+              </div>
+              <div class="field full">
+                <label for="birth_name">
+                  Same as full birth name on your birth certificate? If YES, write “YES”. If not, enter your full birth name.
+                  <span class="req">*</span>
+                </label>
+                <div class="input-wrap">
+                  <i class="bi bi-card-text" aria-hidden="true"></i>
+                  <input type="text" id="birth_name" name="birth_name" placeholder='YES or full birth name' required />
+                </div>
+              </div>
+              <div class="field full">
+                <label for="email">Email <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="bi bi-envelope" aria-hidden="true"></i>
+                  <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-panel">
+            <header class="form-panel__head">
+              <span class="form-panel__num">03</span>
+              <div>
+                <h3>Address</h3>
+                <p>Where we can reach you by mail if needed</p>
+              </div>
+            </header>
+            <div class="grid grid-2">
+              <div class="field full">
+                <label for="street">Street Address <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                  <input type="text" id="street" name="street" placeholder="Street address" required autocomplete="street-address" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="city">City</label>
+                <div class="input-wrap">
+                  <i class="bi bi-building" aria-hidden="true"></i>
+                  <input type="text" id="city" name="city" placeholder="City" autocomplete="address-level2" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="state">State</label>
+                <div class="input-wrap">
+                  <i class="bi bi-map" aria-hidden="true"></i>
+                  <input type="text" id="state" name="state" placeholder="State" autocomplete="address-level1" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="country">Country <span class="req">*</span></label>
+                <div class="input-wrap input-wrap--select">
+                  <i class="bi bi-globe2" aria-hidden="true"></i>
+                  <select id="country" name="country" required>
+                    <option value="">Select country</option>
+                    <option value="United States">United States</option>
+                    <option value="Haiti">Haiti</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Dominican Republic">Dominican Republic</option>
+                    <option value="France">France</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="Jamaica">Jamaica</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="postal">Postal code</label>
+                <div class="input-wrap">
+                  <i class="bi bi-mailbox" aria-hidden="true"></i>
+                  <input type="text" id="postal" name="postal" placeholder="Postal code" autocomplete="postal-code" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-panel">
+            <header class="form-panel__head">
+              <span class="form-panel__num">04</span>
+              <div>
+                <h3>Business / LLC</h3>
+                <p>Tell us if you already have a U.S. company</p>
+              </div>
+            </header>
+            <div class="grid grid-2">
+              <div class="field">
+                <label>Do you have a U.S. LLC and EIN# <span class="req">*</span></label>
+                <div class="choice-row">
+                  <label class="choice">
+                    <input type="radio" name="has_llc" value="Yes" required />
+                    <span><i class="bi bi-check-lg"></i> Yes</span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="has_llc" value="No" />
+                    <span><i class="bi bi-x-lg"></i> No</span>
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="ownership">Ownership % (if applicable)</label>
+                <div class="input-wrap">
+                  <i class="bi bi-percent" aria-hidden="true"></i>
+                  <input type="text" id="ownership" name="ownership" placeholder="e.g. 50%" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-panel" id="docs-block">
+            <header class="form-panel__head">
+              <span class="form-panel__num">05</span>
+              <div>
+                <h3>Documents</h3>
+                <p>Upload clear scans. Passport is required.</p>
+              </div>
+            </header>
+
+            <div class="upload-card">
+              <div class="upload-card__top">
+                <span class="upload-card__badge">Required</span>
+                <label for="passport">Scanned passport (PDF preferred)</label>
+                <p>All 4 corners visible, clear, valid 6+ months. IRS does not accept phone photos.</p>
+              </div>
+              <figure class="id-guide">
+                <img
+                  src="assets/passport-scan-guide.png"
+                  alt="Passport scan guide"
+                  width="1600"
+                  height="900"
+                  loading="lazy"
+                />
+                <figcaption><i class="bi bi-info-circle"></i> Flat scan preferred: no hands, no crop, all four corners visible.</figcaption>
+              </figure>
+              <label class="file-drop" for="passport">
+                <input type="file" id="passport" name="passport" accept=".pdf,application/pdf,image/*" required />
+                <span class="file-drop__ui">
+                  <i class="bi bi-cloud-arrow-up-fill"></i>
+                  <strong>Click to upload passport</strong>
+                  <em>PDF, JPG, PNG or WEBP · max 4.5 MB</em>
+                </span>
+                <span class="file-name" id="passport-name"></span>
+              </label>
+            </div>
+
+            <div class="upload-grid">
+              <div class="upload-card upload-card--compact">
+                <label for="llc_docs">LLC formation documents</label>
+                <p>Optional</p>
+                <label class="file-drop" for="llc_docs">
+                  <input type="file" id="llc_docs" name="llc_docs" accept=".pdf,application/pdf,image/*" />
+                  <span class="file-drop__ui">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    <strong>Upload LLC docs</strong>
+                  </span>
+                  <span class="file-name" id="llc_docs-name"></span>
+                </label>
+              </div>
+              <div class="upload-card upload-card--compact">
+                <label for="ein_doc">EIN copy</label>
+                <p>Optional</p>
+                <label class="file-drop" for="ein_doc">
+                  <input type="file" id="ein_doc" name="ein_doc" accept=".pdf,application/pdf,image/*" />
+                  <span class="file-drop__ui">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <strong>Upload EIN</strong>
+                  </span>
+                  <span class="file-name" id="ein-doc-name"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-orange btn-wide btn-lg" id="submit-form-btn">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="btn-label"><i class="bi bi-send-fill"></i> Submit application</span>
+            </button>
+            <p class="fineprint">
+              <i class="bi bi-lock-fill"></i>
+              Your completed form and documents are emailed securely to our team.
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <!-- STEP 3: DONE -->
+      <div class="form-shell payment-step" id="step-done" hidden>
+        <div class="payment-ready">
+          <div class="form-lock__icon form-lock__icon--ok">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <h3>Application sent</h3>
+          <p id="done-message">Thank you. Your form was emailed to our team. We will contact you shortly.</p>
+          <a class="btn btn-orange btn-lg" href="./"><i class="bi bi-house"></i> Back to home</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell site-footer__inner">
+      <div>
+        <img class="footer-logo" src="assets/logo-jgv.png" alt="JOSEBIS GLOBAL VENTURES LLC" width="200" height="56" />
+        <p>Strategic business solutions for global success.</p>
+      </div>
+      <div class="site-footer__links">
+        <a href="./">Home</a>
+        <a href="./#packages">Packages</a>
+        <a href="https://www.josebisglobalventures.com/#contact" target="_blank" rel="noopener">Contact</a>
+      </div>
+    </div>
+    <p class="site-footer__copy">© <span id="year"></span> JOSEBIS GLOBAL VENTURES LLC. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "josebis-itin-form",
+  "version": "2.0.0",
+  "private": true,
+  "description": "JOSEBIS GLOBAL VENTURES LLC — packages, Stripe checkout, intake form (Vercel)",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "resend": "^4.0.0",
+    "stripe": "^17.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

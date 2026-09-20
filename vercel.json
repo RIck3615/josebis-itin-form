@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/payment-return", "destination": "/payment-return.html" },
+    { "source": "/get-itin", "destination": "/get-itin.html" },
+    { "source": "/itin", "destination": "/get-itin.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}
