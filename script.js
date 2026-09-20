@@ -977,6 +977,58 @@
     }
   }
 
+  function initContactPage() {
+    const form = document.getElementById("contact-form");
+    const alertEl = document.getElementById("alert");
+    const submitBtn = document.getElementById("contact-submit-btn");
+    if (!form) return;
+
+    function showAlert(type, message) {
+      if (!alertEl) return;
+      alertEl.className = "alert show alert-" + type;
+      alertEl.textContent = message;
+      alertEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      if (submitBtn) {
+        submitBtn.classList.add("loading");
+        submitBtn.disabled = true;
+      }
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value,
+            subject: document.getElementById("subject").value,
+            message: document.getElementById("message").value,
+          }),
+        });
+        const json = await res.json().catch(function () {
+          return { ok: false, message: "Unexpected server response." };
+        });
+        if (!res.ok || !json.ok) throw new Error(json.message || "Could not send message.");
+        form.reset();
+        showAlert("success", json.message || "Message sent. We will get back to you shortly.");
+      } catch (err) {
+        showAlert("error", err.message || "Could not send message.");
+      } finally {
+        if (submitBtn) {
+          submitBtn.classList.remove("loading");
+          submitBtn.disabled = false;
+        }
+      }
+    });
+  }
+
   const fallbackPackages = [
     {
       id: "llc_ein_address",
@@ -1032,6 +1084,7 @@
       if (page === "itin") initItinPage();
       if (page === "llc") initLlcPage();
       if (page === "elite") initElitePage();
+      if (page === "contact") initContactPage();
     })
     .catch(function () {
       packages = fallbackPackages;
@@ -1039,5 +1092,6 @@
       if (page === "itin") initItinPage();
       if (page === "llc") initLlcPage();
       if (page === "elite") initElitePage();
+      if (page === "contact") initContactPage();
     });
 })();

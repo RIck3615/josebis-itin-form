@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | JOSEBIS GLOBAL VENTURES LLC</title>
+  <meta name="description" content="Contact JOSEBIS GLOBAL VENTURES LLC for LLC, EIN, ITIN, and Elite USA program support." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="contact">
+  <header class="site-header">
+    <div class="shell site-header__inner">
+      <a class="brand" href="./" aria-label="JOSEBIS GLOBAL VENTURES LLC">
+        <img class="brand__logo" src="assets/logo-jgv.png" alt="JOSEBIS GLOBAL VENTURES LLC" width="280" height="80" />
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="./#packages">Packages</a>
+        <a href="./#about">About</a>
+        <a href="get-itin.html">Get Your ITIN</a>
+        <a class="nav-cta" href="contact.html" aria-current="page">
+          <i class="bi bi-chat-dots-fill"></i> Contact
+        </a>
+      </nav>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </header>
+
+  <section class="contact-hero" id="top">
+    <div class="shell">
+      <p class="eyebrow"><i class="bi bi-chat-dots-fill"></i> Contact</p>
+      <h1>Let’s talk about your U.S. setup</h1>
+      <p class="section-lead">
+        Questions about LLC, EIN, ITIN, or the Elite USA Program? Send a message — our team will get back to you.
+      </p>
+    </div>
+  </section>
+
+  <main class="contact-page">
+    <div class="shell contact-layout">
+      <aside class="contact-aside">
+        <div class="contact-card">
+          <div class="contact-card__icon"><i class="bi bi-envelope-fill"></i></div>
+          <h2>Email</h2>
+          <p>For general inquiries and other-state LLC requests.</p>
+          <a href="mailto:info@josebisglobalventures.com">info@josebisglobalventures.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card__icon"><i class="bi bi-globe2"></i></div>
+          <h2>Website</h2>
+          <p>Learn more about JOSEBIS GLOBAL VENTURES LLC.</p>
+          <a href="https://www.josebisglobalventures.com/" target="_blank" rel="noopener">josebisglobalventures.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card__icon"><i class="bi bi-box-seam-fill"></i></div>
+          <h2>Packages</h2>
+          <p>Ready to start? Choose a package and pay securely.</p>
+          <a href="./#packages">View packages</a>
+        </div>
+      </aside>
+
+      <div class="form-shell contact-form-shell">
+        <div class="form-shell__banner">
+          <div class="form-shell__banner-icon"><i class="bi bi-send-fill"></i></div>
+          <div>
+            <strong>Send a message</strong>
+            <p>We typically respond within 1–2 business days.</p>
+          </div>
+        </div>
+
+        <div id="alert" class="alert" role="alert" aria-live="polite"></div>
+
+        <form id="contact-form" novalidate>
+          <section class="form-panel">
+            <header class="form-panel__head">
+              <span class="form-panel__num">01</span>
+              <div>
+                <h3>Your details</h3>
+                <p>How we can reach you</p>
+              </div>
+            </header>
+            <div class="grid grid-2">
+              <div class="field">
+                <label for="name">Full name <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="bi bi-person" aria-hidden="true"></i>
+                  <input type="text" id="name" name="name" placeholder="Your name" required autocomplete="name" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="email">Email <span class="req">*</span></label>
+                <div class="input-wrap">
+                  <i class="bi bi-envelope" aria-hidden="true"></i>
+                  <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="phone">Phone / WhatsApp</label>
+                <div class="input-wrap">
+                  <i class="bi bi-telephone" aria-hidden="true"></i>
+                  <input type="tel" id="phone" name="phone" placeholder="+1 555 000 0000" autocomplete="tel" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="subject">Subject <span class="req">*</span></label>
+                <div class="input-wrap input-wrap--select">
+                  <i class="bi bi-tag" aria-hidden="true"></i>
+                  <select id="subject" name="subject" required>
+                    <option value="">Select a topic</option>
+                    <option value="LLC + EIN + Business Address">LLC + EIN + Business Address</option>
+                    <option value="Get Your ITIN">Get Your ITIN</option>
+                    <option value="Elite USA Program">Elite USA Program</option>
+                    <option value="Other state LLC request">Other state LLC request</option>
+                    <option value="General question">General question</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-panel">
+            <header class="form-panel__head">
+              <span class="form-panel__num">02</span>
+              <div>
+                <h3>Message</h3>
+                <p>Tell us how we can help</p>
+              </div>
+            </header>
+            <div class="field full">
+              <label for="message">Your message <span class="req">*</span></label>
+              <textarea id="message" name="message" rows="6" placeholder="Write your message here…" required></textarea>
+            </div>
+          </section>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-orange btn-wide btn-lg" id="contact-submit-btn">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="btn-label"><i class="bi bi-send-fill"></i> Send message</span>
+            </button>
+            <p class="fineprint">
+              <i class="bi bi-lock-fill"></i>
+              Your message is sent securely to our team by email.
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell site-footer__inner">
+      <div>
+        <img class="footer-logo" src="assets/logo-jgv.png" alt="JOSEBIS GLOBAL VENTURES LLC" width="200" height="56" />
+        <p>Strategic business solutions for global success.</p>
+      </div>
+      <div class="site-footer__links">
+        <a href="./">Home</a>
+        <a href="./#packages">Packages</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <p class="site-footer__copy">© <span id="year"></span> JOSEBIS GLOBAL VENTURES LLC. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
