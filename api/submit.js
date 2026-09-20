@@ -215,6 +215,65 @@ https://www.josebisglobalventures.com/
   };
 }
 
+const ELITE_GOALS = new Set([
+  "Create an LLC",
+  "Obtain an EIN",
+  "Obtain an ITIN",
+  "Receive 12 Months of U.S. Credit Building & Business Coaching",
+]);
+
+function buildEliteEmail(body, pkg, sessionId) {
+  const firstName = clean(body.first_name);
+  const lastName = clean(body.last_name);
+  const address = clean(body.address);
+  const email = clean(body.email);
+  const phone = clean(body.phone);
+  const goalsRaw = Array.isArray(body.goals) ? body.goals : [];
+  const goals = goalsRaw.map(clean).filter((g) => ELITE_GOALS.has(g));
+
+  if (!firstName || !lastName || !address || !email || !phone) {
+    return { error: "Please fill in all required fields.", status: 400 };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { error: "Please provide a valid email address.", status: 400 };
+  }
+  if (!goals.length) {
+    return { error: "Please select at least one goal.", status: 400 };
+  }
+
+  const fullName = [firstName, lastName].filter(Boolean).join(" ");
+  const submittedAt = new Date().toISOString();
+  const text = `New application: ${pkg.title}
+==============================
+
+Submitted: ${submittedAt}
+Stripe session: ${sessionId || "n/a"}
+
+PERSONAL
+--------
+Name: ${fullName}
+Address: ${address}
+Email: ${email}
+Phone (WhatsApp): ${phone}
+
+GOALS
+-----
+${goals.map((g) => `- ${g}`).join("\n")}
+
+JOSEBIS GLOBAL VENTURES LLC
+https://www.josebisglobalventures.com/
+`;
+
+  return {
+    email,
+    firstName,
+    fullName,
+    subject: `${pkg.title}: ${fullName}`,
+    text,
+    attachments: [],
+  };
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
@@ -242,7 +301,9 @@ module.exports = async function handler(req, res) {
     const built =
       packageId === "llc_ein_address"
         ? buildLlcEmail(body, pkg, tokenCheck.payload.sessionId)
-        : buildItinEmail(body, pkg, tokenCheck.payload.sessionId);
+        : packageId === "elite"
+          ? buildEliteEmail(body, pkg, tokenCheck.payload.sessionId)
+          : buildItinEmail(body, pkg, tokenCheck.payload.sessionId);
 
     if (built.error) {
       res.statusCode = built.status || 400;

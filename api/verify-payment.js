@@ -29,7 +29,11 @@ function readJson(req) {
 }
 
 async function respondWithFormLink(req, res, { packageId, pkg, issued, email, mode }) {
-  const needsForm = Boolean(pkg.requiresForm) || packageId === "itin" || packageId === "llc_ein_address";
+  const needsForm =
+    Boolean(pkg.requiresForm) ||
+    packageId === "itin" ||
+    packageId === "llc_ein_address" ||
+    packageId === "elite";
   const link = formLink(req, issued.token, packageId);
   let formEmail = { ok: false, skipped: true };
 

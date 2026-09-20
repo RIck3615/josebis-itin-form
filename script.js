@@ -79,6 +79,9 @@
         } else if (pkg.id === "llc_ein_address") {
           cta =
             '<a class="btn btn-orange" href="get-llc.html"><i class="bi bi-building" aria-hidden="true"></i> Start LLC setup</a>';
+        } else if (pkg.id === "elite") {
+          cta =
+            '<a class="btn btn-orange" href="get-elite.html"><i class="bi bi-trophy-fill" aria-hidden="true"></i> Start Elite USA</a>';
         } else {
           cta =
             '<button type="button" class="btn btn-orange package-pay" data-package="' +
@@ -730,6 +733,250 @@
     }
   }
 
+  /* --- Elite page: pay → emailed form link → submit → admin email --- */
+  const ELITE_PACKAGE = {
+    id: "elite",
+    title: "Elite USA Program",
+    paymentLink: "https://buy.stripe.com/3cI9AU2O3eD8dsQ9uM9sk08",
+    price: "$2,499.00",
+  };
+
+  function initElitePage() {
+    const form = document.getElementById("elite-form");
+    const alertEl = document.getElementById("alert");
+    const stepForm = document.getElementById("step-form");
+    const stepPayment = document.getElementById("step-payment");
+    const stepDone = document.getElementById("step-done");
+    const payBtn = document.getElementById("elite-pay-btn");
+    const testRow = document.getElementById("test-row");
+    const testPayBtn = document.getElementById("test-pay-btn");
+    const submitBtn = document.getElementById("submit-form-btn");
+    const doneMessage = document.getElementById("done-message");
+    const wizard = document.getElementById("wizard");
+    const applyLead = document.getElementById("apply-lead");
+
+    if (!form) return;
+
+    let paymentToken = null;
+    let pkg = ELITE_PACKAGE;
+    const fromApi = packages.find(function (p) {
+      return p.id === "elite";
+    });
+    if (fromApi) pkg = fromApi;
+
+    function showAlert(type, message) {
+      if (!alertEl) return;
+      alertEl.className = "alert show alert-" + type;
+      alertEl.textContent = message;
+      alertEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function clearAlert() {
+      if (!alertEl) return;
+      alertEl.className = "alert";
+      alertEl.textContent = "";
+    }
+
+    function setWizard(step) {
+      if (!wizard) return;
+      wizard.querySelectorAll(".wizard__step").forEach(function (el) {
+        const n = Number(el.getAttribute("data-step"));
+        el.classList.toggle("is-active", n === step);
+        el.classList.toggle("is-done", n < step);
+      });
+    }
+
+    function showStep(name) {
+      stepForm.hidden = name !== "form";
+      stepPayment.hidden = name !== "payment";
+      stepDone.hidden = name !== "done";
+      if (name === "payment") setWizard(1);
+      if (name === "form") setWizard(2);
+      if (name === "done") setWizard(3);
+    }
+
+    function storePayment(data) {
+      paymentToken = data.payment_token;
+      try {
+        localStorage.setItem(
+          "jgv_payment",
+          JSON.stringify({
+            payment_token: data.payment_token,
+            package_id: data.package_id || "elite",
+            package_title: data.package_title || pkg.title,
+            email: data.email || "",
+            expires_at: data.expires_at,
+            form_link: data.form_link || "",
+          })
+        );
+      } catch (e) {}
+    }
+
+    function unlockForm(token, opts) {
+      opts = opts || {};
+      paymentToken = token;
+      showStep("form");
+      if (applyLead) {
+        applyLead.textContent =
+          "Payment confirmed. Complete the form below. When you submit, our team receives your application by email.";
+      }
+      if (opts.message) showAlert("success", opts.message);
+      else showAlert("success", "Payment verified. Please complete and submit your application.");
+      const applyEl = document.getElementById("apply");
+      if (applyEl) applyEl.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function selectedGoals() {
+      return Array.prototype.map
+        .call(form.querySelectorAll('input[name="goals"]:checked'), function (el) {
+          return el.value;
+        })
+        .filter(Boolean);
+    }
+
+    function buildPayload() {
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        throw new Error("Please complete all required fields.");
+      }
+      const goals = selectedGoals();
+      if (!goals.length) {
+        throw new Error("Please select at least one goal.");
+      }
+      if (!paymentToken) {
+        throw new Error("Missing payment session. Please pay first, then open the link from your email.");
+      }
+      return {
+        payment_token: paymentToken,
+        package_id: "elite",
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        address: document.getElementById("address").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        goals: goals,
+      };
+    }
+
+    if (payBtn) {
+      payBtn.addEventListener("click", function () {
+        clearAlert();
+        startStripe(pkg.paymentLink ? pkg : ELITE_PACKAGE);
+      });
+    }
+
+    if (testPayBtn) {
+      testPayBtn.addEventListener("click", async function () {
+        testPayBtn.disabled = true;
+        try {
+          const res = await fetch("/api/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              test: true,
+              package_id: "elite",
+            }),
+          });
+          const json = await res.json();
+          if (!res.ok || !json.ok) throw new Error(json.message || "Test payment failed");
+          storePayment(json);
+          var msg = "Test payment OK.";
+          if (json.form_email_sent) msg += " Form link emailed.";
+          else if (json.form_link) msg += " Open the form below (email may be skipped in test).";
+          unlockForm(json.payment_token, { message: msg });
+        } catch (err) {
+          showAlert("error", err.message || "Test payment failed");
+        } finally {
+          testPayBtn.disabled = false;
+        }
+      });
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      clearAlert();
+      if (submitBtn) {
+        submitBtn.classList.add("loading");
+        submitBtn.disabled = true;
+      }
+      try {
+        const payload = buildPayload();
+        const res = await fetch("/api/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json().catch(function () {
+          return { ok: false, message: "Unexpected server response." };
+        });
+        if (!res.ok || !json.ok) throw new Error(json.message || "Could not send application.");
+        try {
+          localStorage.removeItem("jgv_payment");
+        } catch (err) {}
+        paymentToken = null;
+        if (doneMessage) {
+          doneMessage.textContent =
+            json.message ||
+            "Thank you. Your form was emailed to our team. We will contact you shortly.";
+        }
+        showStep("done");
+        document.getElementById("apply").scrollIntoView({ behavior: "smooth" });
+      } catch (err) {
+        showAlert("error", err.message || "Submission failed.");
+      } finally {
+        if (submitBtn) {
+          submitBtn.classList.remove("loading");
+          submitBtn.disabled = false;
+        }
+      }
+    });
+
+    if (allowTestPayment && testRow) testRow.hidden = false;
+
+    showStep("payment");
+
+    (function openFromToken() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+        if (!token) return false;
+        storePayment({
+          payment_token: token,
+          package_id: "elite",
+          package_title: pkg.title,
+        });
+        unlockForm(token, {
+          message: "Secure link verified. Complete the form and submit your application.",
+        });
+        if (window.history && window.history.replaceState) {
+          const clean = window.location.pathname + window.location.hash;
+          window.history.replaceState({}, "", clean);
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    if (!paymentToken) {
+      try {
+        const raw = localStorage.getItem("jgv_payment");
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data.payment_token && data.package_id === "elite") {
+            if (data.expires_at && Date.now() > data.expires_at) {
+              localStorage.removeItem("jgv_payment");
+            } else {
+              unlockForm(data.payment_token, {
+                message: "Payment session found. Complete and submit your application.",
+              });
+            }
+          }
+        }
+      } catch (e) {}
+    }
+  }
+
   const fallbackPackages = [
     {
       id: "llc_ein_address",
@@ -758,14 +1005,14 @@
     {
       id: "elite",
       title: "Elite USA Program",
-      tagline: "LLC + EIN + ITIN + 12 months coaching",
+      tagline: "Simple, clear, and powerful",
       description:
-        "A complete U.S. business setup with LLC, EIN, ITIN, Business Address, plus 12 months of coaching.",
-      paymentLink: "https://buy.stripe.com/14A7sMdsH3Yu3Sg6iA9sk06",
+        "Launch your U.S. business with a complete setup package including LLC, EIN, ITIN, and a U.S. Business Address, plus 12 months of personalized coaching to help you build credit, stay compliant, and grow your financial power in the United States.",
+      paymentLink: "https://buy.stripe.com/3cI9AU2O3eD8dsQ9uM9sk08",
       price: "$2,499.00",
       badge: "Elite",
       featured: true,
-      requiresPassport: true,
+      requiresPassport: false,
       highlights: ["LLC + EIN + business address", "ITIN application support", "12 months of coaching"],
     },
   ];
@@ -784,11 +1031,13 @@
       if (page === "home") renderPackages();
       if (page === "itin") initItinPage();
       if (page === "llc") initLlcPage();
+      if (page === "elite") initElitePage();
     })
     .catch(function () {
       packages = fallbackPackages;
       if (page === "home") renderPackages();
       if (page === "itin") initItinPage();
       if (page === "llc") initLlcPage();
+      if (page === "elite") initElitePage();
     });
 })();
