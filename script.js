@@ -432,7 +432,7 @@
   const LLC_PACKAGE = {
     id: "llc_ein_address",
     title: "LLC + EIN + Business Address",
-    paymentLink: "https://buy.stripe.com/bJe9AUbkz8eK60o36o9sk04",
+    paymentLink: "https://buy.stripe.com/3cI9AU2O3eD8dsQ9uM9sk08",
     requiresPassport: true,
   };
 
@@ -732,7 +732,7 @@
       tagline: "U.S. business foundation",
       description:
         "A complete U.S. business setup including LLC formation, EIN registration, and a professional business address to establish credibility, receive mail, and operate legally.",
-      paymentLink: "https://buy.stripe.com/bJe9AUbkz8eK60o36o9sk04",
+      paymentLink: "https://buy.stripe.com/3cI9AU2O3eD8dsQ9uM9sk08",
       badge: "Setup",
       requiresPassport: false,
       highlights: ["LLC formation filing", "EIN registration", "Professional business address"],
