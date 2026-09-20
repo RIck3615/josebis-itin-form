@@ -9,7 +9,7 @@
   const ITIN_PACKAGE = {
     id: "itin",
     title: "Get Your ITIN",
-    paymentLink: "https://buy.stripe.com/3cI9AU2O3eD8dsQ9uM9sk08",
+    paymentLink: "https://buy.stripe.com/3cI8wQ0FV8eKcoM4as9sk07",
     requiresPassport: true,
   };
 
@@ -443,7 +443,7 @@
       tagline: "Official U.S. tax ID",
       description:
         "Get your official ITIN, the U.S. tax ID for individuals who don’t qualify for a Social Security Number. Full application handling and document review.",
-      paymentLink: "https://buy.stripe.com/3cI9AU2O3eD8dsQ9uM9sk08",
+      paymentLink: "https://buy.stripe.com/3cI8wQ0FV8eKcoM4as9sk07",
       badge: "ITIN",
       requiresPassport: true,
       highlights: ["Full application handling", "Professional document review", "Typical IRS timing 6-12 weeks"],
