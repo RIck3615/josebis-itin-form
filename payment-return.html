@@ -49,7 +49,13 @@
         text.textContent = msg;
         cta.hidden = false;
         cta.innerHTML = '<i class="bi bi-arrow-left-circle"></i> Back';
-        cta.href = packageId === "itin" ? "get-itin.html#apply" : "./#packages";
+        cta.href =
+          packageId === "itin"
+            ? "get-itin.html#apply"
+            : packageId === "llc_ein_address"
+              ? "get-llc.html#apply"
+              : "./#packages";
+
       }
 
       function ok(data) {

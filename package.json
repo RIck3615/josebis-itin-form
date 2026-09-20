@@ -4,8 +4,9 @@
   "private": true,
   "description": "JOSEBIS GLOBAL VENTURES LLC — packages, Stripe checkout, intake form (Vercel)",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel dev"
+    "dev": "node server-local.js",
+    "start": "node server-local.js",
+    "vercel": "vercel dev"
   },
   "dependencies": {
     "resend": "^4.0.0",
