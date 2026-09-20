@@ -94,10 +94,18 @@ function wrapRes(nodeRes) {
   };
 }
 
+function clearAppModules() {
+  Object.keys(require.cache).forEach(function (key) {
+    if (key.includes(`${path.sep}api${path.sep}`) || key.includes(`${path.sep}lib${path.sep}`)) {
+      delete require.cache[key];
+    }
+  });
+}
+
 const API = {
-  "/api/config": () => require("./api/config.js"),
-  "/api/verify-payment": () => require("./api/verify-payment.js"),
-  "/api/submit": () => require("./api/submit.js"),
+  "/api/config": "./api/config.js",
+  "/api/verify-payment": "./api/verify-payment.js",
+  "/api/submit": "./api/submit.js",
 };
 
 const server = http.createServer(async (req, res) => {
@@ -106,7 +114,8 @@ const server = http.createServer(async (req, res) => {
     const pathname = url.pathname;
 
     if (API[pathname]) {
-      const handler = API[pathname]();
+      clearAppModules();
+      const handler = require(API[pathname]);
       const vercelRes = wrapRes(res);
       await handler(req, vercelRes);
       return;

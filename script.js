@@ -105,6 +105,11 @@
           "<h3>" +
           escapeHtml(pkg.title) +
           "</h3>" +
+          (pkg.price
+            ? '<p class="package__price"><span>' +
+              escapeHtml(pkg.price) +
+              "</span><em>one-time</em></p>"
+            : "") +
           '<p class="package__tagline">' +
           escapeHtml(pkg.tagline || "") +
           "</p></div>" +
@@ -733,6 +738,7 @@
       description:
         "A complete U.S. business setup including LLC formation, EIN registration, and a professional business address to establish credibility, receive mail, and operate legally.",
       paymentLink: "https://buy.stripe.com/bJe9AUbkz8eK60o36o9sk04",
+      price: "$498.00",
       badge: "Setup",
       requiresPassport: false,
       highlights: ["LLC formation filing", "EIN registration", "Professional business address"],
@@ -744,6 +750,7 @@
       description:
         "Get your official ITIN, the U.S. tax ID for individuals who don’t qualify for a Social Security Number. Full application handling and document review.",
       paymentLink: "https://buy.stripe.com/3cI8wQ0FV8eKcoM4as9sk07",
+      price: "$349.99",
       badge: "ITIN",
       requiresPassport: true,
       highlights: ["Full application handling", "Professional document review", "Typical IRS timing 6-12 weeks"],
@@ -755,6 +762,7 @@
       description:
         "A complete U.S. business setup with LLC, EIN, ITIN, Business Address, plus 12 months of coaching.",
       paymentLink: "https://buy.stripe.com/14A7sMdsH3Yu3Sg6iA9sk06",
+      price: "$2,499.00",
       badge: "Elite",
       featured: true,
       requiresPassport: true,

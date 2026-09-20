@@ -659,6 +659,34 @@ body.nav-open .nav {
   font-weight: 600;
 }
 
+.package__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0.15rem 0 0.75rem;
+}
+
+.package__price span {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.package__price em {
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.package--featured .package__price span {
+  color: var(--orange-deep);
+}
+
 .package__desc {
   margin: 0 0 1rem;
   color: var(--muted);
