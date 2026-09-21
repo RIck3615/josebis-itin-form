@@ -267,7 +267,7 @@ module.exports = async function handler(req, res) {
       uid,
       start,
       end,
-      summary: `Elite USA — Free consultation with ${name}`,
+      summary: `Elite USA Program — Free consultation with ${name}`,
       description: descParts.join("\\n"),
       organizerEmail: to,
       attendeeEmail: email,
@@ -279,7 +279,7 @@ module.exports = async function handler(req, res) {
       ? `\nGoogle Meet:\n${meetLink}\n`
       : "\nGoogle Meet link: will be confirmed by the host.\n";
 
-    const textAdmin = `New Elite USA consultation booking
+    const textAdmin = `New Elite USA Program consultation booking
 =================================
 
 When: ${whenLabel}
@@ -348,7 +348,7 @@ https://www.josebisglobalventures.com/
       await resend.emails.send({
         from,
         to: [email],
-        subject: `Confirmed: Elite USA free consultation — ${whenLabel}`,
+        subject: `Confirmed: Elite USA Program free consultation — ${whenLabel}`,
         text: textClient,
         attachments: [icsAttachment],
       });
