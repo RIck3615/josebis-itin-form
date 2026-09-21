@@ -1868,3 +1868,55 @@ body[data-page="contact"] .fineprint {
   color: var(--muted);
   font-size: 0.82rem;
 }
+
+/* Elite consultation booking */
+.section-lead--fr {
+  margin-top: 0.65rem;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.availability-note {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.15rem;
+  border-radius: 16px;
+  background: linear-gradient(105deg, #fff8f0, #eaf6fb);
+  border: 1px solid var(--line);
+}
+.availability-note > i {
+  color: var(--orange);
+  font-size: 1.2rem;
+  margin-top: 0.15rem;
+}
+.availability-note strong {
+  display: block;
+  color: var(--blue-deep);
+  font-size: 0.92rem;
+}
+.availability-note p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+body[data-page="elite"] textarea {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  font: inherit;
+  background: #fff;
+  color: var(--ink);
+  resize: vertical;
+  min-height: 110px;
+}
+body[data-page="elite"] textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(52, 163, 212, 0.14);
+}
+body[data-page="elite"] input[type="date"] {
+  padding-left: 2.55rem;
+}

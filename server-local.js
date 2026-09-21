@@ -107,6 +107,7 @@ const API = {
   "/api/verify-payment": "./api/verify-payment.js",
   "/api/submit": "./api/submit.js",
   "/api/contact": "./api/contact.js",
+  "/api/book-consultation": "./api/book-consultation.js",
 };
 
 const server = http.createServer(async (req, res) => {

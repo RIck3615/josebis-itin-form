@@ -32,8 +32,7 @@ async function respondWithFormLink(req, res, { packageId, pkg, issued, email, mo
   const needsForm =
     Boolean(pkg.requiresForm) ||
     packageId === "itin" ||
-    packageId === "llc_ein_address" ||
-    packageId === "elite";
+    packageId === "llc_ein_address";
   const link = formLink(req, issued.token, packageId);
   let formEmail = { ok: false, skipped: true };
 
