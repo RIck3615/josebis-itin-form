@@ -743,6 +743,7 @@
     const stepBook = document.getElementById("step-book");
     const stepDone = document.getElementById("step-done");
     const doneMessage = document.getElementById("done-message");
+    const meetJoinBtn = document.getElementById("meet-join-btn");
     if (!form || !dateInput || !timeSelect) return;
 
     function showAlert(type, message) {
@@ -846,6 +847,10 @@
           doneMessage.textContent =
             json.message ||
             "Thank you. Your free consultation call is confirmed. Check your email for the calendar invite.";
+        }
+        if (meetJoinBtn && json.meet_link) {
+          meetJoinBtn.href = json.meet_link;
+          meetJoinBtn.hidden = false;
         }
         document.getElementById("book").scrollIntoView({ behavior: "smooth" });
       } catch (err) {

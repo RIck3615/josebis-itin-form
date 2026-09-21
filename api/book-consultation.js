@@ -120,7 +120,17 @@ function icsStamp(date) {
   );
 }
 
-function buildIcs({ uid, start, end, summary, description, organizerEmail, attendeeEmail, attendeeName }) {
+function buildIcs({
+  uid,
+  start,
+  end,
+  summary,
+  description,
+  organizerEmail,
+  attendeeEmail,
+  attendeeName,
+  meetLink,
+}) {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -138,9 +148,13 @@ function buildIcs({ uid, start, end, summary, description, organizerEmail, atten
     `ATTENDEE;CN=${attendeeName};RSVP=TRUE:mailto:${attendeeEmail}`,
     "STATUS:CONFIRMED",
     "SEQUENCE:0",
-    "END:VEVENT",
-    "END:VCALENDAR",
   ];
+  if (meetLink) {
+    lines.push(`LOCATION:${meetLink}`);
+    lines.push(`URL:${meetLink}`);
+    lines.push(`X-GOOGLE-CONFERENCE:${meetLink}`);
+  }
+  lines.push("END:VEVENT", "END:VCALENDAR");
   return lines.join("\r\n");
 }
 
@@ -238,17 +252,32 @@ module.exports = async function handler(req, res) {
       timeZoneName: "short",
     }).format(start);
 
+    const meetLink = clean(process.env.CONSULTATION_MEET_LINK);
     const uid = `${crypto.randomBytes(12).toString("hex")}@josebisglobalventures.com`;
+    const descParts = [
+      "Free consultation call (Elite USA Program)",
+      `Client: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      `Notes: ${notes || "n/a"}`,
+    ];
+    if (meetLink) descParts.push(`Google Meet: ${meetLink}`);
+
     const ics = buildIcs({
       uid,
       start,
       end,
       summary: `Elite USA — Free consultation with ${name}`,
-      description: `Free consultation call (Elite USA Program)\\nClient: ${name}\\nEmail: ${email}\\nPhone: ${phone}\\nNotes: ${notes || "n/a"}`,
+      description: descParts.join("\\n"),
       organizerEmail: to,
       attendeeEmail: email,
       attendeeName: name,
+      meetLink: meetLink || null,
     });
+
+    const meetBlock = meetLink
+      ? `\nGoogle Meet:\n${meetLink}\n`
+      : "\nGoogle Meet link: will be confirmed by the host.\n";
 
     const textAdmin = `New Elite USA consultation booking
 =================================
@@ -256,7 +285,7 @@ module.exports = async function handler(req, res) {
 When: ${whenLabel}
 Duration: ${SLOT_MINUTES} minutes
 Timezone: ${TIMEZONE}
-
+${meetBlock}
 CLIENT
 ------
 Name: ${name}
@@ -267,7 +296,7 @@ NOTES
 -----
 ${notes || "(none)"}
 
-A calendar invite (.ics) is attached — open it to add this to your agenda.
+A calendar invite (.ics) is attached — open it to add this to your agenda${meetLink ? " (includes Google Meet)" : ""}.
 
 JOSEBIS GLOBAL VENTURES LLC
 `;
@@ -279,8 +308,8 @@ Thank you, ${name}.
 
 When: ${whenLabel}
 Duration: ${SLOT_MINUTES} minutes
-
-Our team will contact you at ${phone} / ${email}.
+${meetBlock}
+Join with Google Meet at the scheduled time${meetLink ? `:\n${meetLink}` : "."}
 
 A calendar invite is attached so you can add this to your agenda.
 
@@ -331,8 +360,9 @@ https://www.josebisglobalventures.com/
     return res.end(
       JSON.stringify({
         ok: true,
-        message: `Thank you, ${name}. Your consultation is booked for ${whenLabel}. Check your email for the calendar invite.`,
+        message: `Thank you, ${name}. Your consultation is booked for ${whenLabel}. Check your email for the calendar invite${meetLink ? " and Google Meet link" : ""}.`,
         when: whenLabel,
+        meet_link: meetLink || null,
       })
     );
   } catch (err) {
